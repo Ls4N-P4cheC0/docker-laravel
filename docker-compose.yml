@@ -1,0 +1,77 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        NODE_IMAGE: ${NODE_IMAGE}
+        PNPM_VERSION: ${PNPM_VERSION}
+        YARN_VERSION: ${YARN_VERSION}
+        COMPOSER_IMAGE: ${COMPOSER_IMAGE}
+        PHP_IMAGE: ${PHP_IMAGE}
+    container_name: laravel-web
+    ports:
+      - "${APP_PORT:-8090}:80"
+      - "${VITE_PORT:-5174}:5174"
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - db
+      - redis
+    networks:
+      - mi_red_desarrollo
+
+  db:
+    image: mysql:8.4
+    container_name: laravel-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${FORWARD_DB_PORT:-33084}:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    restart: always
+    networks:
+      - mi_red_desarrollo
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: laravel-phpmyadmin
+    platform: linux/amd64
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${PHPMYADMIN_PORT:-8094}:80"
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - mi_red_desarrollo
+
+  redis:
+    image: redis:7-alpine
+    container_name: laravel-redis
+    ports:
+      - "${FORWARD_REDIS_PORT:-63795}:6379"
+    volumes:
+      - ./redis-data:/data
+    restart: always
+    networks:
+      - mi_red_desarrollo
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: laravel-mailpit
+    ports:
+      - "${FORWARD_MAILPIT_PORT:-8026}:8025"
+      - "${FORWARD_MAILPIT_SMTP_PORT:-1026}:1025"
+    restart: always
+    networks:
+      - mi_red_desarrollo
+
+networks:
+  mi_red_desarrollo:
+    external: true

@@ -1,0 +1,26 @@
+{
+  "name": "laravel-app",
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+  "service": "web",
+  "workspaceFolder": "/var/www/html",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "junstyle.php-cs-fixer",
+        "MehediDracula.php-namespace-resolver",
+        "neilbrayfield.php-docblocker",
+        "esbenp.prettier-vscode",
+        "mikestead.dotenv",
+        "usernamehw.errorlens",
+        "eamodio.gitlens",
+        "bradlc.vscode-tailwindcss",
+        "onecentlin.laravel-blade",
+        "amiralizadeh9480.laravel-extra-intellisense"
+      ]
+    }
+  },
+  "remoteUser": "root"
+}
