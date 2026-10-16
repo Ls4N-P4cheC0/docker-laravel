@@ -15,8 +15,10 @@ services:
     volumes:
       - ./app:/var/www/html
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - mi_red_desarrollo
 
@@ -33,6 +35,12 @@ services:
     volumes:
       - ./mysql-data:/var/lib/mysql
     restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - mi_red_desarrollo
 
@@ -46,7 +54,8 @@ services:
     ports:
       - "${PHPMYADMIN_PORT:-8094}:80"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: always
     networks:
       - mi_red_desarrollo
@@ -74,4 +83,5 @@ services:
 
 networks:
   mi_red_desarrollo:
-    external: true
+    name: mi_red_desarrollo
+    driver: bridge

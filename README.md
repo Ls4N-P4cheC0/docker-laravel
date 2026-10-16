@@ -1,6 +1,6 @@
 # Soporte de Configuración Docker para Laravel
 
-Este documento resume la arquitectura y configuración del entorno Docker optimizado para **Laravel**, incluyendo **PHP 8.5** (o configurable), **MySQL 8.4 LTS**, **Redis**, **Mailpit** y **phpMyAdmin**.
+Este documento resume la arquitectura y configuración del entorno Docker optimizado para **Laravel**, incluyendo **PHP 8.4** (estable), **MySQL 8.4 LTS**, **Redis**, **Mailpit** y **phpMyAdmin**.
 
 ---
 
@@ -8,7 +8,7 @@ Este documento resume la arquitectura y configuración del entorno Docker optimi
 
 | Servicio | Nombre Contenedor | Puerto Host Configurable | Variable en `.env` | Descripción / Propósito |
 | :--- | :--- | :--- | :--- | :--- |
-| **Laravel Web** | `laravel-web` | **8090** | `APP_PORT` | Apache + PHP 8.5 (DocumentRoot: `/var/www/html/public`) |
+| **Laravel Web** | `laravel-web` | **8090** | `APP_PORT` | Apache + PHP 8.4 (DocumentRoot: `/var/www/html/public`) |
 | **Vite Dev Server** | `laravel-web` | **5174** | `VITE_PORT` | Servidor HMR de Vite para CSS/JS (`npm run dev`) |
 | **MySQL 8.4** | `laravel-db` | **33084** | `FORWARD_DB_PORT` | Base de Datos MySQL 8.4 LTS |
 | **phpMyAdmin** | `laravel-phpmyadmin` | **8094** | `PHPMYADMIN_PORT` | Administrador visual de base de datos |
@@ -21,7 +21,7 @@ Este documento resume la arquitectura y configuración del entorno Docker optimi
 ## 📁 Archivos de Configuración
 
 ### 1. `Dockerfile`
-- **Imagen Base**: `php:8.5-apache-bookworm` (Configurable vía `PHP_IMAGE` en `.env`; para máxima estabilidad con librerías de terceros se puede utilizar `php:8.3-apache-bookworm` o `php:8.4-apache-bookworm`).
+- **Imagen Base**: `php:8.4-apache-bookworm` (Configurable vía `PHP_IMAGE` en `.env`; también compatible con `php:8.3-apache-bookworm`).
 - **Laravel Apache Setup**: Redirige el `DocumentRoot` a `/var/www/html/public` y habilita `a2enmod rewrite` para procesar archivos `.htaccess`.
 - **Extensiones PHP**: Instala `pdo_mysql`, `mbstring`, `intl`, `gd`, `zip`, `bcmath`, `pcntl` (necesario para colas con `artisan queue:work`), `exif` (metadatos de imágenes), `opcache` y la extensión `redis` de PECL.
 - **Herramientas de Desarrollo**: Copia los binarios de **Node.js (v22)** y **Composer (v2.8)** mediante multi-stage build, e instala **pnpm** y **yarn**.
@@ -102,13 +102,10 @@ MAIL_FROM_NAME="${APP_NAME}"
 
 ### Construir e Iniciar el Entorno
 ```bash
-# 1. Crear la red externa de Docker si no existe
-docker network create mi_red_desarrollo
-
-# 2. Construir la imagen web
+# 1. Construir la imagen web
 docker compose build --no-cache web
 
-# 3. Levantar todos los servicios en segundo plano
+# 2. Levantar todos los servicios en segundo plano (la red se crea automáticamente)
 docker compose up -d
 ```
 

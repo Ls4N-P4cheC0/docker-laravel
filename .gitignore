@@ -1,0 +1,30 @@
+# Entorno y credenciales
+.env
+
+# Volúmenes persistentes de bases de datos
+mysql-data/
+redis-data/
+
+# Proyecto Laravel en ./app
+app/vendor/
+app/node_modules/
+app/.env
+app/public/build/
+app/public/hot
+app/storage/*.key
+app/storage/logs/
+app/storage/framework/cache/data/
+app/storage/framework/sessions/
+app/storage/framework/testing/
+app/storage/framework/views/
+
+# Archivos de sistema y editores
+.DS_Store
+Thumbs.db
+*.sublime-workspace
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

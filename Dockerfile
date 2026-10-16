@@ -1,11 +1,11 @@
 ARG NODE_IMAGE=node:22-bookworm
 ARG COMPOSER_IMAGE=composer:2.8.11
-ARG PHP_IMAGE=php:8.5-apache-bookworm
+ARG PHP_IMAGE=php:8.4-apache-bookworm
 
 FROM ${NODE_IMAGE} AS node_source
 FROM ${COMPOSER_IMAGE} AS composer_source
 
-# PHP 8.5 en Debian Bookworm optimizado para Laravel
+# PHP 8.4 en Debian Bookworm optimizado para Laravel
 FROM ${PHP_IMAGE}
 
 ARG PNPM_VERSION=11.15.1
